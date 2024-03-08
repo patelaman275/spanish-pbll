@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spanish Colonial History</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,26 +19,25 @@
                 <li><a href="exchange.html">Cultural Exchange</a></li>
                 <li><a href="economy.html">Economy & Trade</a></li>
                 <li><a href="legacy.html">Legacy & Impact</a></li>
+                
             </ul>
         </nav>
-        <nav>
+        <nav> 
             <ul>
-               
-                <li> <h1> </h1> </li>
-            </ul>
+                <h1> </h1>
+            </ul>   
         </nav>
-        <nav>
+        <nav> 
+            <ul>    
+            <li><a href="#" id="translateButton">Translate</a></li> 
+            </ul>   
+        </nav>
+        <nav> 
             <ul>
-               
-                <li> <h1> </h1> </li>
-            </ul>
+            <li><a href="contact.html">Team Members</a></li> 
+            </ul>   
         </nav>
-        <nav>
-            <ul>
-               
-                <li><a href="contact.html">Team Members</a></li> 
-            </ul>
-        </nav>
+
     </header>
     <main>
         <section id="about">
@@ -88,5 +88,43 @@
         <p>&copy; 2024 ~Amann.</p>
     </footer>
     <script src="script.js"></script>
+    <script>
+        $(document).ready(function() {
+            var isTranslated = sessionStorage.getItem('isTranslated');
+            if (isTranslated === 'true') {
+                translateToSpanish();
+                $('#translateButton').text('Undo Translation');
+            }
+
+            $('#translateButton').click(function() {
+                if (isTranslated === 'true') {
+                    undoTranslation();
+                    $(this).text('Translate to Spanish');
+                } else {
+                    translateToSpanish();
+                    $(this).text('Undo Translation');
+                }
+            });
+
+            function translateToSpanish() {
+                var apiUrl = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=';
+                $('h1, h2, h3, h4, h5, h6, p, a').each(function() {
+                    var originalText = $(this).text();
+                    $.get(apiUrl + encodeURI(originalText), function(data) {
+                        var translatedText = data[0][0][0];
+                        $(this).text(translatedText);
+                    }.bind(this));
+                });
+                sessionStorage.setItem('isTranslated', 'true');
+                isTranslated = 'true';
+            }
+
+            function undoTranslation() {
+                location.reload();
+                sessionStorage.setItem('isTranslated', 'false');
+                isTranslated = 'false';
+            }
+        });
+    </script>
 </body>
 </html>
